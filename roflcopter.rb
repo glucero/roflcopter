@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
 
+# requires ruby 2.0
+
 require 'curses'
 include Curses
 
