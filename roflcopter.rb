@@ -2,6 +2,12 @@
 
 # requires ruby 2.0
 
+# the roflcopter blade animations are created the same way you create a plasma
+# effect. (http://lodev.org/cgtutor/plasma.html)
+#
+# once the copter is created, white space is added to the end of each line and
+# the entire frame is rotated column-wise like a piano roll.
+
 require 'curses'
 include Curses
 
@@ -37,7 +43,8 @@ begin
 
       setpos(5 + index, 0)
       copter = line + (' ' * (cols - 31))
-      addstr copter.chars.rotate(-index + -frame).join
+      copter = copter.chars.rotate -(index + frame)
+      addstr copter.join
     end
 
     refresh
