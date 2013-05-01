@@ -11,38 +11,44 @@ curs_set 0
 
 begin
   frame = 0
-  sound = Process.spawn %|say -v alex the rofl copter says #{'siff ' * 10000}|
+  sound = Process.spawn *%w(say -v alex the rofl copter says), ('siff ' * 10000)
+
+  # http://lodev.org/cgtutor/plasma.html
+  # copter blade animations are created the same way you create a plasma
+  # effect: we use the "propeller" and "rudder" variables as our palette and
+  # replace each number with its corresponding palette character (offset by
+  # the current animation frame number)
+
+  propeller = 'ROFL:'
+  rudder = 'L    '
 
   while (frame += 1)
-    [
-      %|       4321043210LOL4321043210 |,
+    copter = [
+      %|      4321043210LOL4321043210  |,
       %|                 ^             |,
-      %|012      /-------------        |,
-      %|3O3=======        [ ] \\        |,
-      %|210      \\            \\        |,
-      %|         \\____________]        |,
-      %|            I     I            |,
-      %|        --------------/        |
-    ].each_with_index do |line, index|
-      # the roflcopter blade animations are created the same way you create a
-      # plasma effect. (http://lodev.org/cgtutor/plasma.html)
-      5.times do |iteration|
-        if index.zero?
-          line.tr! iteration.to_s, %|ROFL:|[-(iteration + frame) % 5]
-        end
-      end
-      4.times do |iteration|
-        if (2..4) === index
-          line.tr! iteration.to_s, %|L    |[(iteration + frame) % 4]
-        end
-      end
+      %| 012      /-------------       |,
+      %|  3O3=======        [ ] \\     |,
+      %|   210      \\            \\   |,
+      %|             \\____________]   |,
+      %|                  I     I      |,
+      %|               --------------/ |
+    ].map { |l| l + (' ' * (cols - l.length)) } # stretch to full terminal width
 
-      # once the copter is created, white space is added to the end of each
-      # line and the entire frame is rotated column-wise like a piano roll.
-      setpos(5 + index, 0)
-      copter = line + (' ' * (cols - 31))
-      copter = copter.chars.rotate -(index + frame)
-      addstr copter.join
+    # animate the propeller
+    5.times do |iteration|
+      copter[0].tr! iteration.to_s, propeller[-(iteration + frame) % 5]
+    end
+
+    # animate the rudder
+    4.times do |iteration|
+      copter[2..4].each do |line|
+        line.tr! iteration.to_s, rudder[-(iteration + frame) % 5]
+      end
+    end
+
+    copter.each_with_index do |line, index|
+      setpos(lines / 3 + index, 0)
+      addstr (line.chars.rotate -frame).join # rotate the line column-wise
     end
 
     refresh
