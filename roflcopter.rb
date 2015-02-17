@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-raise 'I require Ruby 2.0!' unless RUBY_VERSION[/^2/]
+raise 'I require Ruby 2.0+!' unless RUBY_VERSION[/^2/]
 raise 'I require OSX!' unless RUBY_PLATFORM['darwin']
 
 require 'curses'
