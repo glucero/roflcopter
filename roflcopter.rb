@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-raise 'I require Ruby 2.0!' unless RUBY_VERSION['2.0']
+raise 'I require Ruby 2.0!' unless RUBY_VERSION[/^2/]
 raise 'I require OSX!' unless RUBY_PLATFORM['darwin']
 
 require 'curses'
@@ -42,7 +42,7 @@ begin
     # animate the rudder
     4.times do |iteration|
       copter[2..4].each do |line|
-        line.tr! iteration.to_s, rudder[-(iteration + frame) % 5]
+        line.tr! iteration.to_s, rudder[-(iteration + frame) % 4]
       end
     end
 
